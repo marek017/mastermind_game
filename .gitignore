@@ -1,0 +1,5 @@
+# Git ignore
+mastermind_game.sln
+mastermind_game/bin/
+mastermind_game/obj/
+mastermind_game/mastermind_game.csproj
