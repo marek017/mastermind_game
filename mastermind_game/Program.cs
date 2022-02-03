@@ -5,8 +5,8 @@ namespace mastermind_game
 {
     class Program
     {
-        static int maxPegs = 6;
-        static int codeLenght = 4;
+        static readonly int maxPegs = 6;
+        static readonly int codeLenght = 4;
         static bool gameEnd = false;
 
         static int[] secretCode = new int[codeLenght];
@@ -17,71 +17,59 @@ namespace mastermind_game
         static void Main(string[] args)
         {
             Setup();
-            //Console.WriteLine("Hello World!");
+
             do
             {
                 ReadCode();
                 CheckCode();
-            } while (gameEnd);
+            } while (!gameEnd);
 
-            Console.WriteLine("You have breaked the secret code! " + secretCode.ToString());
+            Console.WriteLine("You have cracked the secret code!");
         }
 
         private static void Setup()
         {
-            Console.WriteLine("Master mind game!\n");
-            //TODO: fix code generation
-            do
+            Console.WriteLine("Master mind game!\n X - correct location and correct number of peg\n O - wrong locaiton and correct number of peg ");
+            int num = rnd.Next(1, maxPegs);
+            for (int i = 0; i < codeLenght; i++)
             {
-                int num = rnd.Next(1, maxPegs);
-                if(!secretCode.Contains(num))
-                    secretCode.Append(num);
-                Console.WriteLine(num);
-
-            } while (secretCode.Length < codeLenght);
-            
+                while(secretCode.Contains(num))
+                {
+                    num = rnd.Next(1, maxPegs);
+                }
+                secretCode[i] = num;
+            }
         }
 
         private static void CheckCode()
         {
-            string feedback = "";
-            int correctPeg = 0; 
-            int guessedPeg = 0;
-
             if (guessedCode.SequenceEqual(secretCode))
                 gameEnd = true;
 
-            for (int i =01; i < codeLenght-1; i++)
+            string feedback = "";
+            for (int i = 0; i < codeLenght; i++)
             {
-                if (guessedCode[i].Equals(secretCode[i]))
-                    correctPeg++;
-                else if (guessedCode.Contains(secretCode[i]))
-                    guessedPeg++;
+                if (guessedCode[i] == secretCode[i])
+                {
+                    feedback += "X";
+                    continue;
+                }
+                if (guessedCode.Contains(secretCode[i]))
+                {
+                    feedback += "O";
+                }
             }
-
-            for (int i = 0; i <= correctPeg; i++)
-            {
-                feedback += "Ø";
-            }
-
-            for (int i = 0; i <= guessedPeg; i++)
-            {
-                feedback += "O";
-            }
-
-            Console.Write(" feedback: " + feedback);
+            Console.Write("feedback: {0}\n",feedback);
         }
 
         private static void ReadCode()
         {
-            Console.WriteLine("Type {0} digit code\n",codeLenght);
-            int temp = int.Parse(Console.ReadLine());
-            while(temp > 0)
+            Console.WriteLine("Type {0} digit code",codeLenght);
+            char[] temp = Console.ReadLine().ToCharArray();
+            for (int i = 0; i < codeLenght; i++)
             {
-                guessedCode.Append(temp % 10);
-                temp /= 10;
+                guessedCode[i] = int.Parse(temp[i].ToString());
             }
-            guessedCode.Reverse();
         }
     }
 }
